@@ -10,9 +10,39 @@ class AdminController {
     ]);
     return APIResponse.success(res, 'Admin stats fetched', { users, tasks });
   }
+
+  static async updateUserRole(req, res) {
+    const { id } = req.params;
+    const { role } = req.body;
+
+    if (!['user', 'admin'].includes(role)) {
+      return APIResponse.error(res, 'Invalid role provided', 400);
+    }
+
+    const user = await User.findById(id);
+    if (!user) return APIResponse.notFound(res, 'User not found');
+
+    user.role = role;
+    await user.save();
+
+    return APIResponse.success(res, 'User role updated', {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+  }
+
+  static async deleteUser(req, res) {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) return APIResponse.notFound(res, 'User not found');
+
+    await user.deleteOne();
+
+    return APIResponse.success(res, 'User deleted successfully');
+  }
 }
 
-
 module.exports = AdminController;
-// This code defines an AdminController class that provides a method to fetch statistics for the admin dashboard.
-// It retrieves the count of users and tasks from the database and returns them in a structured API response.   
