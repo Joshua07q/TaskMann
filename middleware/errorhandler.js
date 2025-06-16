@@ -11,7 +11,7 @@ module.exports = (err, req, res, next) => {
     return APIResponse.badRequest(res, 'Duplicate value error');
   }
 
-  return APIResponse.error(res, 'Internal Server Error', 500);
+  return APIResponse.serverError(res, 'Internal Server Error', 500);
 };
 // This code defines an error handling middleware for Express.js applications.
 // It catches errors, logs them, and sends a standardized error response based on the type of error.

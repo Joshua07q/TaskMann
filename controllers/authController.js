@@ -40,14 +40,19 @@ class AuthController {
       return APIResponse.unauthorized(res, 'Invalid credentials');
     }
 
-    return APIResponse.success(res, 'Login successful', {
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        token: TokenService.generate(user._id),
-      },
-    });
+  const token = TokenService.generate(user._id);
+    if (!token) {
+      return APIResponse.serverError(res, 'Token generation failed');
+    }
+  return APIResponse.success(res, 'Login successful', {
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+    token,
+  });
   }
 }
 

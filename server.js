@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/authRoutes'); // User authentication routes
 const adminRoutes = require('./routes/adminRoutes'); // Admin routes
+const streakRoutes = require('./routes/streakRoutes'); // Streak management routes
 // Task management routes
 const taskRoutes = require('./routes/taskRoutes');
 const reminderJob = require('./jobs/reminderJob'); // ⏰ CRON JOB
@@ -55,6 +56,7 @@ initializeRoutes() {
   this.app.use('/api/auth', userRoutes);
   this.app.use('/api/admin', adminRoutes);
   this.app.use('/api/tasks', taskRoutes);
+  this.app.use('/api/streak', streakRoutes);
 }
 
   handleErrors() {

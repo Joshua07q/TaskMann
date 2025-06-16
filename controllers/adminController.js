@@ -1,6 +1,7 @@
-const User = require('../models/User');
-const Task = require('../models/Task');
-const APIResponse = require('../utils/apiResponse');
+const User = require("../models/User");
+const Task = require("../models/Task");
+const Notification = require("../models/Notifications");
+const APIResponse = require("../utils/apiResponse");
 
 class AdminController {
   static async getStats(req, res) {
@@ -8,24 +9,29 @@ class AdminController {
       User.countDocuments(),
       Task.countDocuments(),
     ]);
-    return APIResponse.success(res, 'Admin stats fetched', { users, tasks });
+    return APIResponse.success(res, "Admin stats fetched", { users, tasks });
   }
 
   static async updateUserRole(req, res) {
     const { id } = req.params;
     const { role } = req.body;
 
-    if (!['user', 'admin'].includes(role)) {
-      return APIResponse.error(res, 'Invalid role provided', 400);
+    if (!["user", "admin"].includes(role)) {
+      return APIResponse.error(res, "Invalid role provided", 400);
     }
 
     const user = await User.findById(id);
-    if (!user) return APIResponse.notFound(res, 'User not found');
+    if (!user) return APIResponse.notFound(res, "User not found");
 
     user.role = role;
     await user.save();
-
-    return APIResponse.success(res, 'User role updated', {
+    await Notification.create({
+      userId: id,
+      message: `Your role has been changed to ${role}`,
+      type: "info",
+      seen: false,
+    });
+    return APIResponse.success(res, "User role updated", {
       id: user._id,
       name: user.name,
       email: user.email,
@@ -37,11 +43,11 @@ class AdminController {
     const { id } = req.params;
 
     const user = await User.findById(id);
-    if (!user) return APIResponse.notFound(res, 'User not found');
+    if (!user) return APIResponse.notFound(res, "User not found");
 
     await user.deleteOne();
 
-    return APIResponse.success(res, 'User deleted successfully');
+    return APIResponse.success(res, "User deleted successfully");
   }
 }
 

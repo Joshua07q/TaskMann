@@ -40,6 +40,7 @@ class TaskController {
 
     return APIResponse.success(res, "Task updated", task);
   }
+  
   async getOne(req, res) {
     const task = await Task.findOne({ _id: req.params.id, user: req.user._id });
     if (!task) return APIResponse.badRequest(res, "Task not found");

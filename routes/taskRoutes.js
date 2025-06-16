@@ -3,7 +3,7 @@ const router = express.Router();
 const TaskController = require('../controllers/taskController');
 const { protect } = require('../middleware/authMiddleware');
 
-router.use(protect);
+
 
 /**
  * @swagger
@@ -127,6 +127,7 @@ router.use(protect);
  *       404:
  *         description: Task not found
  */
+router.use(protect);
 router.post('/', TaskController.create);
 router.get('/', TaskController.getAll);
 router.get('/:id', TaskController.getOne);
